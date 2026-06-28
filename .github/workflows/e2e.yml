@@ -33,6 +33,7 @@ jobs:
 
       - name: Install system dependencies
         run: npm install
+      # TODO cleaner setup
       - name: patch webpack 
         run: |
           npm install --save-dev terser-webpack-plugin webpack js-yaml
@@ -41,6 +42,7 @@ jobs:
         working-directory: coc7-system-tests
         run: |
           if [ -f package-lock.json ]; then npm ci; else npm install; fi
+          npm install -D webpackbar@^7
 
       - name: Run Foundry E2E
         uses: Achoobert/FoundryvttTestEnv@0.0.8
