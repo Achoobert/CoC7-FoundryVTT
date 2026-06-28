@@ -27,7 +27,8 @@ jobs:
       - name: Checkout Quench tests
         uses: actions/checkout@v6
         with:
-          repository: Miskatonic-Investigative-Society/coc7-system-tests
+          repository: Achoobert/coc7-system-tests
+          # repository: Miskatonic-Investigative-Society/coc7-system-tests # restore once testing is done.
           ref: develop
           path: coc7-system-tests
 
