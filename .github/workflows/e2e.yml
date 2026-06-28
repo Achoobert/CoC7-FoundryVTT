@@ -33,6 +33,9 @@ jobs:
 
       - name: Install system dependencies
         run: npm install
+      - name: patch webpack 
+        run: |
+          npm install --save-dev terser-webpack-plugin webpack js-yaml
 
       - name: Install Quench test dependencies
         working-directory: coc7-system-tests
