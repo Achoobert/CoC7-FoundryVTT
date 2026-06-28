@@ -32,7 +32,7 @@ jobs:
           path: coc7-system-tests
 
       - name: Install system dependencies
-        run: npm ci
+        run: npm install
 
       - name: Install Quench test dependencies
         working-directory: coc7-system-tests
@@ -40,21 +40,23 @@ jobs:
           if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
       - name: Run Foundry E2E
-        uses: Achoobert/FoundryvttTestEnv@0.0.7
+        uses: Achoobert/FoundryvttTestEnv@0.0.8
         with:
           foundry_version: '14.364'
           foundry_world: coc7-test
           test_system_manifest_url: local
           test_module_ids: quench,coc7-system-tests # these will be enabled in the world, and installed if they aren't created by other build seteps
           build_script: |
-            dest=foundrydata/Data/systems/coc7
-            npm run build:css
-            bash build/build-packs.sh
-            mkdir -p "$dest"
-            rsync -a \
-              --exclude '.git' --exclude 'node_modules' --exclude 'foundrydata' --exclude '.foundry-docker' --exclude 'scss' --exclude 'packs/source' \
-              system.json LICENSE.txt module css lang templates packs assets \
-              "$dest/"
+            set -e
+            userdata="$(pwd)/foundrydata"
+            mkdir -p "$userdata"
+            # webpack outputs to <prefix>/Data/systems/CoC7; point the prefix at foundrydata
+            printf '{\n  "currentSelection": "ci",\n  "ci": "%s"\n}\n' "$userdata" > fvtt.config.json
+            # binary packs must exist before webpack validates (binary-packs/*/LOCK)
+            npm run compendiums-build
+            npm run manuals-build
+            npm run roll-requests-build
+            npm run build
           quench_tests_path: ./coc7-system-tests
           quench_build_command: npm --prefix coc7-system-tests run build
           foundry_username: ${{ secrets.FOUNDRY_USERNAME }}
