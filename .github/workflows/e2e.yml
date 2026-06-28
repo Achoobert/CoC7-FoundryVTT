@@ -46,7 +46,7 @@ jobs:
           npm install -D webpackbar@^7
 
       - name: Run Foundry E2E
-        uses: Achoobert/FoundryvttTestEnv@0.0.10
+        uses: Achoobert/FoundryvttTestEnv@0.0.12
         with:
           foundry_version: '14.364'
           foundry_world: coc7-test
